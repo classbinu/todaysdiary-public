@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}모두의 일기장{% endblock %}
+
+{% block content %}
+    {% comment %} <div class="text-center bg-primary pb-10">
+        <a href="{% url 'base:diary' rand_user %}" class="btn mx-5">친구 일기장 놀러가기</a>
+    </div> {% endcomment %}
+
+    <div class="text-center my-10">
+        <p class="text-2xl text-warning">공개 일기를 보여드려요</p>
+    </div>
+
+    {% if post_list %}
+            <div class="container mx-auto flex flex-wrap justify-start">
+                {% for post in best_posts%}
+                    <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                        <a href="{% url 'posts:post_detail' post.id %}">
+                            <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                                <div class="card-body h-72 bg-white">
+                                    <div class="flex justify-between">
+                                        <p>{{ post.author.nickname }}</p>
+                                        <div>
+                                            <p class="text-right text-sm text-gray-500">{{ post.created_at | date:'Y. m. d. D' }}</p>
+                                            <div class="flex justify-end">
+                                                <div class="badge badge-primary">추천 일기</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider my-0"></div> 
+                                    <h2 class="card-title">{{ post.title|truncatechars:32 }}</h2> 
+                                    <div class="text-clip overflow-hidden">{{ post.content|truncatechars:180 |linebreaks }}</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+
+                {% for post in post_list%}
+                    <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                        <a href="{% url 'posts:post_detail' post.id %}">
+                            <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                                <div class="card-body h-72 bg-white">
+                                    <div class="flex justify-between">
+                                        <p>{{ post.author.nickname }}</p>
+                                        <div>
+                                            <p class="text-right text-sm text-gray-500">{{ post.created_at | date:'Y. m. d. D' }}</p>
+                                            <p class="text-sm text-gray-500 text-right">조회수 {{ post.hits }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="divider my-0"></div> 
+                                    <h2 class="card-title">{{ post.title|truncatechars:32 }}</h2> 
+                                    <div class="text-clip overflow-hidden">{{ post.content|truncatechars:180 |linebreaks }}</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+    {% else %}
+    <div class="container mx-auto flex flex-wrap justify-start">
+        <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+            <a href="{% url 'posts:post_create' %}">
+                <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                    <div class="card-body h-72">
+                        <h2 class="card-title">일기가 없습니다.</h2> 
+                        <p>여기를 눌러서 일기를 써 보세요!</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% include "paginator.html" %}
+
+{% endblock %}

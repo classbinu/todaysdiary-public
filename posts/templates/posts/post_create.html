@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}일기 작성{% endblock %}
+
+{% block content %}
+
+    <div class="container mx-auto w-full pt-5 px-5">
+        <div class="card shadow-lg w-full h-full break-all">
+            <div class="card-body bg-primary h-56 xl:px-80 lg:px-40 sm:px-20 px-5 text-center">
+                <h1 class="card-title lg:text-3xl">#{{ topic.id }}</h1> 
+                <h1 class="card-title lg:text-3xl">{{ topic.title|linebreaksbr }}</h1> 
+            </div>
+            <div class="text-center bg-primary pb-10">
+                <a href="{% url 'topics:topic' %}" class="btn btn-error"><i class="fa-solid fa-magnifying-glass"></i>&nbsp;다른 주제</a> 
+                <a href="/post/create/?topic={{ topic.id }}" class="btn btn-success"><i class="fa-solid fa-pencil"></i>&nbsp;이 주제로 일기쓰기</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center mt-10">
+        <form method="post" name="postForm" class="lg:w-2/5 md:w-3/5 sm:w-4/5 w-full mx-5">
+            {% csrf_token %}
+            <p><input type="text" name="author" required id="id_author" value="{{ user.id }}" readonly hidden></p>
+            <p><input type="text" name="topic" required id="id_topic" value="{{ topic.pk }}" readonly hidden></p>
+            <div class="flex justify-end">
+                
+                <div id="id_postPublicTooltip" class="tooltip tooltip-open tooltip-top tooltip-info" data-tip="누구나 일기를 읽을 수 있어요.">
+                    <p>{{ form.public }}</p>
+                </div>
+
+                <div id="id_postClassTooltip" class="tooltip tooltip-open tooltip-top tooltip-info" data-tip="학급을 선택하세요.">
+                    <p class="ml-2">
+                        <select name="classroom" class="select select-bordered select-primary w-full max-w-xs" id="id_classroom">
+                            <option value="">선택한 학급이 없습니다.</option>
+                            {% for classroom in classroom_list %}
+                                <option value="{{classroom.id}}">{{ classroom }} {{ classroom.idnex }} </option>
+                            {% endfor %}
+                        </select>
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-2">
+                <p class="text-xs text-success">'모두 공개' 후 학급을 선택하면 '모두의 일기장'과 '우리반 일기장'에 모두 등록됩니다.</p>
+            </div>
+
+            <p>{{ form.title }}</p>
+            <p>{{ form.content }}</p>
+            <div class="flex justify-end">
+                <button type="submit" class="btn btn-primary" id="id_saveBtn">저장</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="{% static 'posts/js/main.js' %}"></script>
+{% endblock %}

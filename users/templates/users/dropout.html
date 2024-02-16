@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+
+{% block title %}회원 탈퇴{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center mt-20 mb-20 mx-10">
+        <div>
+            <h3 class="text-4xl text-error text-center mb-10">꼭 읽어주세요.</h3>
+            <ul class="text-lg">
+                <li>- 탈퇴된 계정은 절대 복구할 수 없습니다.</li>
+                <li>- 작성한 일기와 댓글이 모두 삭제됩니다.</li>
+                <li>- 개설한 학급이 있는 경우 학급도 삭제됩니다.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="flex justify-center text-3xl mb-10">
+        정말 탈퇴하시겠습니까?
+    </div>
+
+    <div class="flex justify-center">
+        <form method="post">
+            {% csrf_token %}
+            <a href="javascript:history.back()" class="btn mr-10">취소</a>
+            <button type="submit" class="btn btn-error ml-10">탈퇴</button>
+        </form>
+    </div>
+{% endblock %}

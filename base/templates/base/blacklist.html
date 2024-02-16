@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}차단 회원{% endblock %}
+
+{% block content %}
+
+    <div class="text-center my-20">
+        <p class="text-2xl text-warning">차단 회원</p>
+    </div>
+
+    <div class="flex justify-center mb-40">
+        <div class="xl:w-4/12 lg:w-8/12 w-10/12">
+
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                  <!-- head -->
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>별명</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for blockedUser in blacklist %}
+                    <tr>
+                      <th>{{ blockedUser.username }}</th>
+                      <th><a href="{% url 'base:diary' blockedUser.username %}" class="link">{{ blockedUser.nickname }}</a></th>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+        </div>
+    </div>
+        
+{% endblock %}

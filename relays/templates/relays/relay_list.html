@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}릴레이 소설{% endblock %}
+
+{% block content %}
+
+    <div class="text-center my-10">
+        <p class="text-2xl text-warning">릴레이 소설</p>
+    </div>
+
+    <div class="container mx-auto flex flex-wrap justify-start">
+        {% for relay in relay_list%}
+            <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                <a href="{% url 'posts:post_detail' relay.post.id %}">
+                    <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                        <div class="card-body h-72 bg-white">
+
+                            <div class="flex justify-between">
+                                <p>{{ relay.post.author.nickname }}</p>
+                                <p class="text-right text-sm text-gray-500">{{ relay.post.created_at | date:'Y. m. d. D' }}</p>
+                            </div>
+                            <div class="flex justify-between">
+                                {% if relay.status == 'pending' %}
+                                    <div class="badge badge-primary">진행 중</div>
+                                {% elif relay.status == 'success' %}
+                                    <div class="badge badge-success">완결</div>
+                                {% elif relay.status == 'failure' %}
+                                    <div class="badge badge-error">실패</div>
+                                {% endif %}
+                                <p class="text-sm text-gray-500 text-right">조회수 {{ relay.post.hits }}</p>
+                            </div>
+
+                            <div class="divider my-0"></div> 
+                            <h2 class="card-title">{{ relay.post.title|truncatechars:32 }}</h2> 
+                            {% if relay.status == 'pending' %}
+                                <p>지금 참여할 수 있는 릴레이 소설입니다.</p>
+                            {% elif relay.status == 'success' %}
+                                <p>완결된 릴레이 소설입니다.</p>
+                            {% elif relay.status == 'failure' %}
+                                <p>실패한 릴레이 소설입니다.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+        <!-- 릴레이 소설 이벤트 -->
+        <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+            <a href="{% url 'posts:post_detail' event_relay.id %}">
+                <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                    <div class="card-body h-72 bg-white">
+
+                        <div class="flex justify-between">
+                            <p>관리자</p>
+                            <p class="text-right text-sm text-gray-500">{{ relay.post.created_at | date:'Y. m. d. D' }}</p>
+                        </div>
+                        <div class="flex justify-between">
+                            <div class="badge badge-success">완결</div>
+                            <p class="text-sm text-gray-500 text-right">조회수 {{ event_relay.hits }}</p>
+                        </div>
+
+                        <div class="divider my-0"></div> 
+                        <h2 class="card-title">{{ event_relay.title }}</h2> 
+                        <p>완결된 릴레이 소설입니다.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    {% include "paginator.html" %}
+
+{% endblock %}

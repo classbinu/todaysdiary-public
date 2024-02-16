@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} 우리반 일기장 {% endblock %}
+
+{% block content %}
+    <div class="container mx-auto w-full p-5">
+        <div class="card shadow-lg w-full h-full break-all">
+            <div class="card-body bg-success h-72 xl:p-20 lg:p-20 sm:p-20 p-10">
+                <h2 class="card-title text-base-100">[{{ classroom.year }}] {{ classroom.school }} {{ classroom.grade }}-{{ classroom.number }}</h2> 
+                <p class="text-base-100">{{ classroom.bio }}</p>
+            </div>
+        </div>
+        <div class="container mx-auto flex justify-end mt-10">
+            <a href="{% url 'classrooms:classroom_detail' classroom.id %}" class="btn btn-success"><i class="fa-solid fa-school"></i>&nbsp;우리반 돌아가기</a>
+        </div>
+    </div>
+
+    {% if student_list %}
+        <div class="container mx-auto flex flex-wrap justify-start">
+        {% for student in student_list %}
+            <a href="{% url 'base:diary' username=student.username %}">
+                <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                    <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ student.nickname }}({{ student.username }})</h2>
+                            <div class="flex justify-end mt-10">
+                                <a class="btn mx-1" href="{% url 'classrooms:classroom_password' classroom.id %}?id={{ student.id }}">비밀번호 변경</a>
+                                <a class="btn btn-error mx-1" href="{% url 'classrooms:classroom_ban' classroom.id %}?id={{ student.id }}">강제탈퇴</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center mt-40">학생이 없습니다.</p>
+    {% endif %}
+
+    {% if classroom_list.count > 80 %}
+        {% include "paginator.html" %}
+    {% endif %}
+
+{% endblock %}

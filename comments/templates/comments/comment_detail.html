@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}댓글 수정{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center my-20">
+        <form method="post" class="lg:w-1/2 md:w-3/5 sm:w-4/5 w-4/5">
+            {% csrf_token %}
+            <div class="flex justify-center">
+                {{ form.content }}
+                {{ form.public }}
+                <button type="submit" class="btn">수정</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /ad7min
+Disallow: /mydiary
+Disallow: /mycomment
+Disallow: /mypost_comment
+Disallow: /logout
+Disallow: /mypage
+Disallow: /password_change
+Disallow: /dropout
+Disallow: /comment
+Disallow: /classroom
+
+Sitemap: https://todaysdiary.net/sitemap.xml

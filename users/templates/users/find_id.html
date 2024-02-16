@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+
+{% block title %}아이디 찾기{% endblock %}
+
+{% block content %}
+    {% comment %} <div class="flex justify-center mt-60">
+        {% for message in messages %}
+            {% if message.tags == "success" %}
+                <p class="text-success">{{ message }}</a>
+            {% elif message.tags == "error" %}
+                <p class="text-error">{{ message }}</a>
+            {% endif %}
+        {% endfor %}
+    </div> {% endcomment %}
+    <div class="flex justify-center mt-20 mx-10 text-center">
+        <p class="text-success">가입한 학급이 있으면, 학급 선생님이 학생 아이디를 찾을 수 있습니다.<br>(우리반 일기장 &#8594; 내가 개설한 학급 &#8594; 학생 관리)</p>
+    </div>
+
+    <div class="flex justify-center mt-20">
+        <form method="post" class="xl:w-2/12 lg:w-4/12 md:w-6/12 sm:w-8/12 w-10/12">
+            {% csrf_token %}
+            <p><input type="email" class="input input-primary input-bordered my-2" style="width: 100%" type="text" name="id_email" autofocus maxlength="20" required id="id_username" placeholder="이메일"></p>
+            <div class="flex justify-end">
+                <button type="submit" class="btn btn-primary btn-block mt-5">아이디 찾기</button>
+            </div>
+        </form>
+    </div>
+    <div class="flex justify-center mt-10 link link-hover text-warning">
+        <a href="{% url 'users:login' %}">로그인</a>
+    </div>
+{% endblock %}

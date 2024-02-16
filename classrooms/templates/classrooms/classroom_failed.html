@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}학급 가입 불가{% endblock %}
+
+{% block content %}
+    <div class="flex my-20 justify-center">
+        <div class="p-10 bg-white rounded-md shadow-xl xl:w-4/12 lg:w-6/12 w-10/12">
+            <div class="flex flex-col items-center">
+                <h1 class="font-bold text-primary text-9xl">403</h1>
+
+                <h6 class="mb-2 text-xl font-bold text-center text-gray-800 md:text-2xl">
+                    <span class="text-red-500">학급 비밀번호가 틀렸습니다 :(</span>
+                </h6>
+
+                <p class="mb-8 text-center text-gray-500 md:text-lg">
+                    선생님이 알려주신 학급 비밀번호 6자리를 확인하세요.
+                </p>
+                <div class="flex flex-center">
+                    <a href="{% url 'classrooms:classroom_search' %}" id="policyAgreeBtn" class="btn btn-success btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md mx-1">다른 학급 찾기</a>
+                    <a href="javascript:history.back()" id="policyAgreeBtn" class="btn btn-primary btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md mx-1">비밀번호 재입력</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,1 @@
+web: gunicorn todaysdiary.wsgi --log-file -

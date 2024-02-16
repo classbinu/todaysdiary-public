@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}회원가입{% endblock %}
+
+{% block content %}
+
+    <div class="flex justify-center mt-20">
+        <form method="post" class="xl:w-2/12 lg:w-4/12 md:w-6/12 sm:w-8/12 w-10/12">
+            {% csrf_token %}
+            <p>{{ form.username }}</p>
+            {% if form.username.errors %}
+                <p class="label-text-alt text-error text-right">이미 존재하는 아이디입니다 :(</p>
+            {% endif %}
+            <p>{{ form.password }}</p>
+            {% if form.password.errors %}
+                <p class="label-text-alt text-error text-right">비밀번호가 적절하지 않습니다 :(</p>
+            {% endif %}
+            <p>{{ form.password1 }}</p>
+            {% if form.password1.errors %}
+                <p class="label-text-alt text-error text-right">비밀번호가 일치하지 않습니다 :(</p>
+            {% endif %}
+            <p>{{ form.nickname }}</p>
+            {% if form.nickname.errors %}
+                <p class="label-text-alt text-error text-right">이미 존재하는 닉네임입니다 :(</p>
+            {% endif %}
+
+            <label class="cursor-pointer label">
+                <a href="#policy" class="label-text link">이용약관 동의</a>
+                <input type="checkbox" required id="policyCheckbox" class="checkbox checkbox-primary">
+            </label>
+
+            <label class="cursor-pointer label">
+                <a href="#privacy" class="label-text link">개인정보 이용 및 수집 동의</a>
+                <input type="checkbox" required id="privacyCheckbox" class="checkbox checkbox-primary">
+            </label>
+
+            <div class="flex justify-center mt-5">
+                <button type="submit" class="btn btn-primary btn-block">회원가입</button>
+            </div>
+            
+        </form>
+    </div>
+    <div class="flex justify-center mt-10 link link-hover text-warning">
+        <a href="{% url 'users:login' %}">로그인</a>
+    </div>
+
+    <div class="modal" id="policy">
+        <div class="modal-box">
+            <div class="flex justify-end">
+                <a href="#postSample" class="btn btn-circle btn-outline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </a>
+            </div>
+            <h3 class="font-bold text-lg">이용약관 동의</h3>
+            <p class="py-4">
+                {% include "policy.html" %}
+            </p>
+            <div class="modal-action flex justify-end">
+                <a href="javascript:history.back()" id="policyAgreeBtn" class="btn btn-primary">동의</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="privacy">
+        <div class="modal-box">
+            <div class="flex justify-end">
+                <a href="javascript:history.back()" class="btn btn-circle btn-outline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </a>
+            </div>
+            <h3 class="font-bold text-lg">개인정보 이용 및 수집 동의</h3>
+            <p class="py-4">
+                {% include "privacy.html" %}
+            </p>
+            <div class="modal-action flex justify-end">
+                <a href="javascript:history.back()" id="privacyAgreeBtn" class="btn btn-primary">동의</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="askAge">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg tex-center">만 14세 이상이신가요?</h3>
+            <p class="py-4 text-sm">생일이 {{ year }}년 {{ date|date:'n' }}월 {{ date|date:'j'}}일 이전이면 만 14세 이상입니다.</p>
+            <p class="py-4 text-sm text-success">만 14세 미만 아동도 법정대리인의 동의가 있으면 가입할 수 있습니다.</p>
+            <div class="modal-action flex justify-end">
+                <a href="#askAgree" id="policyAgreeBtn" class="btn btn-error btn-outline btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md">아니요, 만 14세 미만입니다</a>
+                <a href="#" id="policyAgreeBtn" class="btn btn-success btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md">네, 만 14세 이상입니다</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="askAgree">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-error">동의 버튼은 반드시 법정대리인이 눌러주세요.</h3>
+            <p class="py-4">아동의 회원가입 및 개인정보 수집이용에 동의하시나요?</p>
+            <div class="modal-action flex justify-end">
+                <a href="{% url 'base:index' %}" id="policyAgreeBtn" class="btn btn-error btn-outline btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md">아니요, 동의하지 않습니다<br>(또는 회원가입 취소)</a>
+                <a href="#" id="policyAgreeBtn" class="btn btn-success btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md">네, 동의합니다</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{% static 'users/js/main.js' %}"></script>
+{% endblock %}

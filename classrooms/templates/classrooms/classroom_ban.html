@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+
+{% block title %}강제 탈퇴{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center my-20 mx-10">
+        <div>
+            <h3 class="text-4xl text-error text-center mb-10">꼭 읽어주세요.</h3>
+            <ul class="text-lg">
+                <li>- 강제탈퇴된 학생이 다시 가입할 수 있으니 학급 비밀번호를 변경해주세요.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="flex justify-center text-3xl mb-10">
+        정말 강제탈퇴 처리하겠습니까?
+    </div>
+
+    <div class="flex justify-center">
+        <form method="post">
+            {% csrf_token %}
+            <a href="javascript:history.back()" class="btn mr-10">취소</a>
+            <button type="submit" class="btn btn-error ml-10">강제 탈퇴</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block title %} 마이페이지 {% endblock %}
+
+{% block content %}
+    <div class="flex justify-center mt-20">
+        <form method="post" class="xl:w-2/12 lg:w-4/12 md:w-6/12 sm:w-8/12 w-10/12">
+            {% csrf_token %}
+            <span class="label-text">닉네임</span>
+            <p>{{ form.nickname }}</p>
+            {% if form.nickname.errors %}
+                <p class="label-text-alt text-error text-right">이미 존재하는 닉네임입니다 :(</p>
+            {% endif %}
+            <span class="label-text mb-0">자기소개</span>
+            <p>{{ form.bio }}</p>
+            <span class="label-text">이메일</span>
+            <p>{{ form.email }}</p>
+            {% if form.email.errors %}
+                <p class="label-text-alt text-error text-right">잘못된 이메일입니다 :(</p>
+            {% endif %}
+            <div class="flex justify-end">
+                <button type="submit" class="btn btn-primary btn-block">변경하기</button>
+            </div>
+        </form>
+    </div>
+    <div class="flex justify-center mt-10">
+        <a href="{% url 'users:blacklist' %}" class="text-xs link-hover">차단 회원 관리</a>
+    </div>
+    <div class="flex justify-center mt-10">
+        <a href="{% url 'users:password_change' %}" class="mr-10 link-hover">비밀번호 변경</a>
+        <a href="{% url 'users:dropout' %}" class="ml-10 text-error link-hover">회원 탈퇴</a>
+    </div>
+   
+{% endblock %}

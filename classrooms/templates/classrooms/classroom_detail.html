@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}우리반 일기장{% endblock %}
+
+{% block content %}
+    {% comment %} <a href="{% url 'relays:relay_list'%}">
+        <div class="alert alert-warning shadow-lg flex justify-center">
+            <div>
+                <span><i class="fa-solid fa-pen-fancy"></i>&nbsp;새로운 릴레이 소설이 오픈되었습니다.<br>각자의 댓글이 모여 한 편의 소설이 됩니다.</span>
+            </div>
+        </div>
+    </a> {% endcomment %}
+
+    <div class="container mx-auto w-full p-5">
+        <div class="card shadow-lg w-full h-full break-all">
+            <div class="card-body bg-success h-72 xl:p-20 lg:p-20 sm:p-20 p-10">
+                {% if user.email == "" %}
+                    <div class="flex justify-end">
+                        <a href="{% url 'users:mypage' %}" class="text-primary link link-hover">비밀번호 분실에 대비해서 이메일을 입력해주세요.</a>
+                    </div>
+                {% endif %}
+                <h2 class="card-title text-base-100">[{{ classroom.year }}] {{ classroom.school }} {{ classroom.grade }}-{{ classroom.number }}</h2> 
+                <p class="text-base-100">{{ classroom.bio }}</p>
+            </div>
+        </div>
+    </div>
+
+    {% if classroom.teacher == user %}
+        <div class="container mx-auto flex justify-end mt-5">
+            <a href="{% url 'classrooms:classroom_update' classroom.id %}" class="btn btn-success mr-2"><i class="fa-solid fa-chalkboard-user"></i>&nbsp;학급 관리</a>
+            <a href="{% url 'classrooms:classroom_member' classroom.id %}" class="btn btn-primary mr-5"><i class="fa-solid fa-user-group"></i>&nbsp;학생 관리</a>
+        </div>
+    {% endif %}
+    
+
+    {% if post_list %}
+        <div class="container mx-auto flex flex-wrap justify-start">
+            {% for post in post_list%}
+                <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                    <a href="{% url 'posts:post_detail' post.id %}">
+                        <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                            <div class="card-body h-72">
+                                <div class="flex justify-between">
+                                    <p>{{ post.author.nickname }}</p>
+                                    <div>
+                                        <p class="text-right text-sm text-gray-500">{{ post.created_at | date:'Y. m. d. D' }}</p>
+                                        <p class="text-sm text-gray-500 text-right">조회수 {{ post.hits }}</p>
+                                    </div>
+                                </div>
+                                <div class="divider my-0"></div> 
+                                <h2 class="card-title">{{ post.title|truncatechars:32 }}</h2> 
+                                <div class="text-clip overflow-hidden">{{ post.content|truncatechars:180 |linebreaks }}</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="container mx-auto flex flex-wrap justify-start">
+            <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                <a href="{% url 'posts:post_create' %}">
+                    <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                        <div class="card-body h-72">
+                            <h2 class="card-title">일기가 없습니다.</h2> 
+                            <p>여기를 눌러서 일기를 써 보세요!</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if classroom.teacher != user %}
+        <div class="container mx-auto flex justify-end mt-40">
+            <a href="{% url 'classrooms:classroom_out' classroom.id %}" class="btn btn-outline btn-error mr-5">학급 탈퇴</a>
+        </div>
+    {% endif %}
+
+    {% include "paginator.html" %}
+
+{% endblock %}

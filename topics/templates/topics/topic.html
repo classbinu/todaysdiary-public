@@ -1,0 +1,405 @@
+{% extends 'base.html' %} {% load static %} {% block title %}재미있는 일기
+주제{% endblock %} {% block content %}
+<script type="text/javascript" src="{% static 'topics/js/main.js' %}"></script>
+{% if user.is_authenticated %} {% if user.username == 'admin' %}
+<script>
+  setTimeout(topicShow, 1000);
+</script>
+{% else %}
+<script>
+  setTimeout(topicShow, 4000);
+</script>
+{% endif %} {% else %}
+<script>
+  setTimeout(topicShow, 5000);
+</script>
+{% endif %}
+
+<div class="flex justify-center mt-5" id="searching" style="display: block">
+  <div class="text-center">
+    <h1 class="text-primary lg:text-xl">재미있는 일기 주제를 찾고 있어요 :)</h1>
+    <div class="flex justify-center">
+      <img src="{% static 'base/img/searching.gif' %}" width="60" />
+    </div>
+  </div>
+</div>
+
+<div
+  class="container mx-auto w-full pt-5 px-5"
+  id="topic"
+  style="display: none"
+>
+  <div class="card shadow-lg w-full h-full break-all">
+    <div
+      class="card-body bg-primary h-56 xl:px-80 lg:px-40 sm:px-20 px-5 text-center"
+    >
+      <h1 class="card-title lg:text-3xl">#{{ topic.id }}</h1>
+      <h1 class="card-title lg:text-3xl">{{ topic.title|linebreaksbr }}</h1>
+    </div>
+
+    <div
+      id="topicButtonBefore"
+      style="display: block"
+      class="text-center bg-primary pb-5"
+    >
+      {% comment %} {% if user.is_authenticated %}
+      <a href="#" class="btn btn-error"
+        ><i class="fa-solid fa-magnifying-glass"></i>&nbsp;다른 주제</a
+      >
+      {% else %}
+      <div data-tip="로그인을 하면 더 빨라져요" class="tooltip tooltip-open">
+        <a href="#" class="btn btn-error"
+          ><i class="fa-solid fa-magnifying-glass"></i>&nbsp;다른 주제</a
+        >
+      </div>
+      {% endif %}
+      <a href="#" class="btn btn-success"
+        ><i class="fa-solid fa-pencil"></i>&nbsp;이 주제로 일기쓰기</a
+      >
+      <div class="flex justify-center mt-5">
+        <a href="#" class="link-hover text-error text-xs mx-7">신고하기</a>
+        <a href="#" class="link-hover text-success text-xs mx-12">제안하기</a>
+      </div>
+      {% endcomment %}
+    </div>
+
+    <div
+      id="topicButtonAfter"
+      style="display: none"
+      class="text-center bg-primary pb-5"
+    >
+      {% if user.is_authenticated %}
+      <a href="{% url 'topics:topic' %}" class="btn btn-error"
+        ><i class="fa-solid fa-magnifying-glass"></i>&nbsp;다른 주제</a
+      >
+      {% else %}
+      <div data-tip="로그인을 하면 더 빨라져요" class="tooltip tooltip-open">
+        <a href="{% url 'topics:topic' %}" class="btn btn-error"
+          ><i class="fa-solid fa-magnifying-glass"></i>&nbsp;다른 주제</a
+        >
+      </div>
+      {% endif %}
+      <a href="/post/create/?topic={{ topic.id }}" class="btn btn-success"
+        ><i class="fa-solid fa-pencil"></i>&nbsp;이 주제로 일기쓰기</a
+      >
+      <div class="flex justify-center mt-5">
+        <a href="#report" class="link-hover text-error text-xs mx-7"
+          >신고하기</a
+        >
+        <a href="#report2" class="link-hover text-success text-xs mx-12"
+          >제안하기</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="postList" style="display: none">
+  {% if post_list %}
+  <div class="container mx-auto flex flex-wrap justify-start mb-20">
+    {% for post in post_list%}
+    <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+      <a href="#{{ post.id }}">
+        <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+          <div class="card-body h-72 bg-white">
+            <div class="flex justify-between">
+              <p>{{ post.author.nickname }}</p>
+              <div>
+                <p class="text-right text-sm text-gray-500">
+                  {{ post.created_at | date:'Y. m. d. D' }}
+                </p>
+                <p class="text-sm text-gray-500 text-right">
+                  조회수 {{ post.hits }}
+                </p>
+              </div>
+            </div>
+            <div class="divider my-0"></div>
+            <h2 class="card-title">{{ post.title|truncatechars:32 }}</h2>
+            <div class="text-clip overflow-hidden">
+              {{ post.content|truncatechars:180 |linebreaks }}
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="container mx-auto flex flex-wrap justify-start mb-20">
+    <div class="lg:w-1/4 md:w-1/2 w-full mx-5">
+      <a href="/post/create/?topic={{ topic.id }}">
+        <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+          <div class="card-body h-72">
+            <h2 class="card-title">이 주제로 작성된 일기가 없어요.</h2>
+            <p>이 주제의 첫 번째 작가가 되어 주세요!</p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ad -->
+<div id="topicAd" style="display: block" class="flex justify-center my-5">
+  <div class="container mx-auto flex flex-wrap justify-center">
+    <div class="lg:w-1/3 md:w-1/2 w-full mx-5">
+      {% comment %} 기존 책 광고 {% endcomment %} {% if ad == 0 %}
+      <p class="text-2xl text-center text-accent">추 천 도 서</p>
+      <a
+        href="https://indiepub.kr/product/detail.html?product_no=596&cate_no=24&display_group=1"
+        target="_blank"
+      >
+        <img
+          src="{% static 'base/img/ad_book_0.jpeg' %}"
+          style="width: 70%"
+          class="mx-auto xl:block lg:block md:block block"
+        />
+        <button class="btn btn-success btn-block mt-5 mb-20">
+          자세히 살펴보기&nbsp;&rarr;
+        </button>
+      </a>
+      {% elif ad == 1 %}
+      <p class="text-2xl text-center text-accent">추 천 도 서</p>
+      <a
+        href="https://book.naver.com/bookdb/book_detail.nhn?bid=20777162"
+        target="_blank"
+      >
+        <img
+          src="{% static 'base/img/ad_book_1.jpeg' %}"
+          style="width: 70%"
+          class="mx-auto xl:block lg:block md:block block"
+        />
+        <button class="btn btn-success btn-block mt-5 mb-20">
+          자세히 살펴보기&nbsp;&rarr;
+        </button>
+      </a>
+      {% elif ad == 2 %}
+      <p class="text-2xl text-center text-accent">추 천 도 서</p>
+      <a
+        href="https://book.naver.com/bookdb/book_detail.naver?bid=14868778"
+        target="_blank"
+      >
+        <img
+          src="{% static 'base/img/ad_book_2.jpeg' %}"
+          style="width: 70%"
+          class="mx-auto xl:block lg:block md:block block"
+        />
+        <button class="btn btn-success btn-block mt-5 mb-20">
+          자세히 살펴보기&nbsp;&rarr;
+        </button>
+      </a>
+      {% elif ad >= 3 %}
+      <p class="text-2xl text-center text-accent">추 천 연 수</p>
+      <a
+        href="https://educator.edunet.net/search.php?ckeywordType=&ckeyword=%EB%AF%BC%EC%83%81%EA%B8%B0&searchType=integration&status=0"
+        target="_blank"
+      >
+        <img
+          src="{% static 'base/img/ad_coding.png' %}"
+          style="width: 100%"
+          class="mx-auto xl:block lg:block md:block block"
+        />
+        <button class="btn btn-success btn-block mt-5 mb-20">
+          자세히 살펴보기&nbsp;&rarr;
+        </button>
+      </a>
+      {% endif %} {% comment %} 구글 애드센스 {% endcomment %} {% comment %}
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1253504528912825"
+        crossorigin="anonymous"
+      ></script>
+      <!-- 주제로딩2 -->
+      <ins
+        class="adsbygoogle"
+        style="display: block"
+        data-ad-client="ca-pub-1253504528912825"
+        data-ad-slot="4679455966"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      {% endcomment %}
+    </div>
+  </div>
+</div>
+
+{% if post_list %} {% for post in post_list%}
+<div class="modal" id="{{ post.id }}">
+  <div class="modal-box">
+    <div class="flex justify-end">
+      <a href="#postSample" class="btn btn-circle btn-outline">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </a>
+    </div>
+    <h3 class="font-bold text-lg">{{ post.title }}</h3>
+    <p class="py-4">{{ post.content|linebreaksbr }}</p>
+    <div class="modal-action flex justify-between">
+      <a href="{% url 'posts:post_detail' post.id %}" class="btn btn-outline"
+        >댓글 달기</a
+      >
+      <a href="javascript:history.back()" class="btn btn-error">닫기</a>
+    </div>
+  </div>
+</div>
+{% endfor %} {% endif %}
+
+<!-- modal -->
+<div class="modal" id="report">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg text-error text-center">신고하기</h3>
+    <p class="py-4 text-center">
+      일기 쓰기에 부적절한 주제를 발견하셨나요?<br />의견을 주시면 꼼꼼하게
+      검토하겠습니다.<br />처리 결과는 별도 안내드리지 않습니다.
+    </p>
+    <form method="post" action="{% url 'reports:report' %}">
+      {% csrf_token %}
+      <p>
+        <input
+          type="text"
+          name="type"
+          required
+          id="id_type"
+          value="1"
+          readonly
+          hidden
+        />
+      </p>
+      <p>
+        <input
+          type="text"
+          name="ref"
+          required
+          id="id_ref"
+          value="{{ topic.pk }}"
+          readonly
+          hidden
+        />
+      </p>
+      <textarea
+        class="textarea textarea-primary"
+        style="width: 100%"
+        type="text"
+        name="content"
+        autofocus
+        maxlength="2000"
+        required
+        id="id_content"
+        placeholder="일기 주제 #{{ topic.pk }}에 대한 의견을 적어주세요."
+      ></textarea>
+      <p class="text-right text-success mb-2">
+        제출 후에는 새로운 주제를 알려드려요.
+      </p>
+      <div class="flex justify-end">
+        <a href="#" class="btn btn-outline btn">취소</a>
+        <button type="submit" id="reportBtn" class="btn btn-error ml-2">
+          신고
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="report2">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg text-success text-center">제안하기</h3>
+    <p class="py-4 text-center">
+      더 재미있는 글쓰기 주제가 떠올랐나요?<br />관리자의 검토를 거쳐 일기
+      주제로 게시됩니다.<br />처리 결과는 별도 안내드리지 않습니다.<br /><span
+        class="text-error"
+        >반드시 자신의 생각을 적어주세요.<br />다른 책이나 인터넷에서 본 주제를
+        제출하지 마세요.</span
+      >
+    </p>
+    <form method="post" action="{% url 'reports:report' %}">
+      {% csrf_token %}
+      <p>
+        <input
+          type="text"
+          name="type"
+          required
+          id="id_type"
+          value="4"
+          readonly
+          hidden
+        />
+      </p>
+      <p>
+        <input
+          type="text"
+          name="ref"
+          required
+          id="id_ref"
+          value=""
+          readonly
+          hidden
+        />
+      </p>
+      <textarea
+        class="textarea textarea-primary"
+        style="width: 100%"
+        type="text"
+        name="content"
+        autofocus
+        maxlength="100"
+        required
+        id="id_content"
+        placeholder="더 재미있는 일기 주제를 알려주세요."
+      ></textarea>
+      <p class="text-right text-success mb-2">
+        제출 후에는 새로운 주제를 알려드려요.
+      </p>
+      <div class="flex justify-end">
+        <a href="#" class="btn btn-outline btn">취소</a>
+        <button type="submit" id="report2Btn" class="btn btn-primary ml-2">
+          제출
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  //임시저장 체크
+  tempPostCheck();
+
+  function tempPostCheck() {
+    url = localStorage.tempPostUrl;
+    title = localStorage.tempPostTitle;
+    if (url && title != "") {
+      if (
+        confirm(
+          "임시 저장된 일기가 있습니다. 확인하시겠습니까?\n('취소'를 누르면 임시 저장된 내용이 삭제됩니다.)"
+        ) == true
+      ) {
+        location.href = url;
+      } else {
+        tempPostDelete();
+      }
+    }
+  }
+
+  function tempPostDelete() {
+    localStorage.removeItem("tempPostTitle");
+    localStorage.removeItem("tempPostUrl");
+    localStorage.removeItem("tempPostContent");
+  }
+</script>
+
+{% endblock %}

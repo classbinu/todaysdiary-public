@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}학급 검색{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center mt-32 mb-10">
+        <form method="get" class="xl:w-2/5 lg:w-3/5 md:w-4/5 w-10/12">
+            <div class="flex">
+                <select name="year" required id="id_year" class="select select-bordered select-primary max-w-xs">
+                    <option value="2024" selected>2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                </select>
+                <input type="text" name="school" required id="id_school" class="input input-primary input-bordered ml-1" autocomplete="off" style="width: 100%" placeholder="검색할 학교 이름을 적어주세요." value={{ school }}>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="btn btn-primary mt-2">검색</button>
+            </div>
+        </form>
+    </div>
+
+    {% if classroom_list %}
+        <div class="container mx-auto flex flex-wrap justify-start">
+            {% for classroom in classroom_list%}
+                <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                    <a href="{% url 'classrooms:classroom_detail' classroom.id %}">
+                        <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                            <div class="card-body h-72 bg-success text-white">
+                                <h2 class="card-title">[{{ classroom.year }}] {{ classroom.school }} {{ classroom.grade }}-{{ classroom.number }}</h2> 
+                                <p>{{ classroom.bio|truncatechars:20 }}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% elif school != "" %}
+        <div class="text-center">
+            <p>검색 조건에 맞는 학급이 없습니다.</p>
+        </div>
+    {% else %}
+        <div class="my-80"></div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user.nickname }}의 일기장{% endblock %}
+
+{% block content %}
+
+    <div class="container mx-auto w-full p-5">
+        <div class="card shadow-lg w-full h-full break-all">
+            <div class="card-body bg-primary h-72 xl:p-20 lg:p-20 sm:p-20 p-10">
+                {% if user.email == "" %}
+                    <div class="flex justify-end">
+                        <a href="{% url 'users:mypage' %}" class="text-error link link-hover">비밀번호 분실에 대비해서 이메일을 입력해주세요.</a>
+                    </div>
+                {% endif %}
+                <h2 class="card-title">{{ user.nickname }}의 일기장</h2> 
+                <p>{{ user.bio }}</p>
+            </div>
+        </div>
+
+        <div class="container mx-auto flex flex-wrap justify-end mt-10">
+            <a href="{% url 'posts:post_create' %}" class="btn btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-md"><i class="fa-solid fa-pencil"></i>&nbsp;일기 쓰기</a>
+            <a href="{% url 'base:mypost_comment' %}" class="btn btn-warning btn-xs sm:btn-sm md:btn-md lg:btn-md mx-2"><i class="fa-solid fa-comment"></i>&nbsp;내가 받은 댓글</a>
+            <a href="{% url 'base:mycomment' %}" class="btn btn-info btn-xs sm:btn-sm md:btn-md lg:btn-md"><i class="fa-solid fa-hand-holding-heart"></i>&nbsp;내가 쓴 댓글</a>
+        </div>
+    </div>
+
+    {% if post_list %}
+        <div class="container mx-auto flex flex-wrap justify-start">
+            {% for post in post_list%}
+                <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                    <a href="{% url 'posts:post_detail' post.id %}">
+                        <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                            <div class="card-body h-72 bg-white">
+                                <div class="flex justify-between">
+                                    {% if post.public == "public" %}
+                                        <div class="badge badge-primary">모두 공개</div>
+                                    {% elif post.public == "class" %}
+                                        <div class="badge badge-success">우리반 공개</div>
+                                    {% elif post.public == "private" %}
+                                        <div class="badge badge-error">비공개</div>
+                                    {% endif %}
+                                    <div>
+                                        <p class="text-right text-sm text-gray-500">{{ post.created_at | date:'Y. m. d. D' }}</p>
+                                        <p class="text-sm text-gray-500 text-right">조회수 {{ post.hits }}</p>
+                                    </div>
+                                </div>
+                                <div class="divider my-0"></div>
+                                <h2 class="card-title">{{ post.title|truncatechars:14 }}</h2> 
+                                <div class="text-clip overflow-hidden">{{ post.content|truncatechars:180 |linebreaks }}</div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="container mx-auto flex flex-wrap justify-start">
+            <div class="lg:w-1/4 md:w-1/2 w-full p-5">
+                <a href="{% url 'posts:post_create' %}">
+                    <div class="hover:shadow-2xl card shadow-lg w-full h-full break-all">
+                        <div class="card-body h-72">
+                            <h2 class="card-title">일기가 없습니다.</h2> 
+                            <p>여기를 눌러서 일기를 써 보세요!</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+    
+    {% include "paginator.html" %}
+
+
+{% endblock %}

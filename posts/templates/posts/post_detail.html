@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %}일기{% endblock %}
+
+{% block content %}
+    {% comment %} <a href="{% url 'relays:relay_list'%}">
+        <div class="alert alert-warning shadow-lg flex justify-center">
+            <div>
+                <span><i class="fa-solid fa-pen-fancy"></i>&nbsp;새로운 릴레이 소설이 오픈되었습니다.<br>각자의 댓글이 모여 한 편의 소설이 됩니다.</span>
+            </div>
+        </div>
+    </a> {% endcomment %}
+
+    <div class="flex justify-center mt-5 mx-5">
+        <div class="xl:w-6/12 lg:w-6/12 md:w-8/12 w-full h-full card shadow-lg break-all">
+            <div class="card-body bg-white lg:p-24">
+                <div class="flex justify-between mb-10">
+                    {% if post.public == "public" %}
+                        <div class="badge badge-primary">모두 공개</div>
+                    {% elif post.public == "class" %}
+                        <div class="badge badge-success">우리반 공개 
+                            {% if post.classroom == None %}
+                                (선택한 학급이 없습니다.)
+                            {% else %}
+                                {{ post.classroom }}
+                            {% endif %}
+                        </div>
+                    {% elif post.public == "private" %}
+                        <div class="badge badge-error">비공개</div>
+                    {% endif %}
+                </div>
+
+                <h2 class="card-title text-center mb-20">{{ post.title }}</h2>
+                <div class="flex justify-between">
+                    <div>
+                        <a href="{% url 'base:diary' post.author %}" class="link-hover link-secondary">{{ post.author.nickname }}</a>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">{{ post.created_at | date:'Y. m. d. D' }}</p>
+                        <p class="text-sm text-gray-500 text-right">조회수 
+                            {% if post.author == user %}
+                                {{ post.hits }}
+                            {% else %}
+                                {{ post.hits_up }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="divider mb-10"></div> 
+                <p>{{ post.content|linebreaksbr }}</p>
+                
+                {% comment %} 일반 멘트 {% endcomment %}
+                <div class="my-16 xl:h-40 lg:h-40 md:h-40 h-80 rounded-lg bg-primary flex justify-center place-items-center">
+                    <span class="p-8 text-center">친구들과 주변 선생님들에게 <오늘의 일기>를 소개해 주세요!<br>이용자가 많아질수록 일기 주제가 풍부해집니다!</span>
+                </div>
+
+                {% if post.topic.public != "private" %}
+                    <div class="flex justify-end">
+                        <p class="text-xs">#{{ post.topic.id }} {{ post.topic.title }}</p>
+                    </div>
+                    <div class="flex justify-end mt-2">
+                        <a href="/post/create/?topic={{ post.topic.id }}" class="link-hover text-success">이 주제로 일기쓰기</a>
+                    </div>
+                {% endif %}
+
+                    <!-- kakao link -->
+                    <!-- <div class="flex justify-end mt-2">
+                        <a id="create-kakao-link-btn" href="javascript:;">
+                            <img
+                              src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                              alt="카카오링크 보내기 버튼"
+                            />
+                          </a>
+                          <script type="text/javascript">
+                            Kakao.Link.createDefaultButton({
+                                container: '#create-kakao-link-btn',
+                                objectType: 'text',
+                                text:
+                                    '[오늘의 일기] {{ post.title }}',
+                                link: {
+                                mobileWebUrl: '{{ request.build_absolute_uri }}',
+                                webUrl: '{{ request.build_absolute_uri }}',
+                                },
+                            })
+                          </script>
+                    </div> -->
+
+                <div class="flex justify-end mt-2">
+                    <script type="text/javascript">
+                        function copy() {
+                            const temp = document.createElement("textarea");
+                            document.body.appendChild(temp);
+                            temp.value = "{{ request.build_absolute_uri }}";
+                            temp.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(temp);
+                            alert("링크가 복사되었습니다.");
+                        }
+                    </script>
+                    <a href="javascript:copy();">
+                        <img
+                            src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                            alt="카카오링크 보내기 버튼"
+                        />
+                    </a>
+                </div>
+
+                <div class="flex justify-end">
+                    <a href="#report" class="link-hover text-xs pt-5 text-error">신고하기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% comment %} 구글 애드센스 {% endcomment %}
+    {% comment %} <div class="flex justify-center mt-5 mx-5">
+        <div class="xl:w-6/12 lg:w-6/12 md:w-8/12 w-full h-full">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1253504528912825" crossorigin="anonymous"></script>
+            <!-- 포스트 -->
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-1253504528912825"
+                data-ad-slot="5173349750"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div> {% endcomment %}
+
+    {% if post.author == user %}
+        <div class="flex justify-center mt-5 mx-5">
+            <div class="flex justify-end xl:w-6/12 lg:w-6/12 md:w-8/12 w-full">
+                <a href="update/" class="btn">수정</a>
+                <a href="delete/" class="btn btn-error ml-2">삭제</a>
+            </div>
+        </div>
+    {% elif post.classroom.teacher == user %}
+        <div class="flex justify-center mt-5 mx-5">
+            <div class="flex justify-end xl:w-6/12 lg:w-6/12 md:w-8/12 w-full">
+                <a href="delete/" class="btn btn-error ml-2">삭제</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if comment_list %}
+        <div class="flex justify-center mt-10">
+            <div class="xl:w-6/12 lg:w-6/12 md:w-8/12 w-full divide-y divide-solid bg-white p-5 rounded-3xl">
+                {% for comment in comment_list %}
+                    <div class="flex justify-between lg:px-5 lg:px-10 py-5">
+                        <div class="w-4/6">
+                            {% if relay %}
+                                <span class="text-gray-500">[{{ forloop.counter }}/50]</span><br>
+                            {% endif %}
+                            {{ comment.content|linebreaksbr }}
+                            {% if relay and forloop.counter == 49 %}
+                                <p class="text-xs text-error">릴레이 소설은 50번째 댓글에서 완결됩니다. 다음 댓글 작성자는 결말을 지어주세요!</p>
+                            {% endif %}
+                            {% if comment.public == "private" %}
+                                <p class="label-text-alt text-error">게시글 작성자와 댓글 작성자, 학급 선생님만 읽을 수 있는 비밀 댓글입니다.</p>
+                            {% endif %}
+                        </div>
+                        <div class="text-right">
+                            <div>
+                                <a href="{% url 'base:diary' comment.author %}" class="link-hover link-secondary">{{ comment.author.nickname }}</a>
+                                <p class="text-xs text-gray-500 mt-2">{{ comment.updated_at | date:'Y. m. d. G:i' }}</p>
+                            </div>
+                            {% if comment.author == user %}
+                                <a href="{% url 'comments:comment_update' comment.id %}" class="btn btn-xs">수정</a>
+                                <a href="{% url 'comments:comment_delete' comment.id %}" class="btn btn-xs btn-error">삭제</a>
+                            {% elif post.classroom.teacher == user %}
+                                <a href="{% url 'comments:comment_delete' comment.id %}" class="btn btn-xs btn-error">삭제</a>
+                            {% elif post.author == user %}
+                                <a href="{% url 'comments:comment_delete' comment.id %}" class="btn btn-xs btn-error">삭제</a>
+                            {% else %}
+                                <a href="#report2" class="link-hover text-xs pt-5 text-error">신고하기</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor%}
+            </div>
+        </div>
+    {% endif %}
+
+
+    <!-- 하단 댓글 -->
+    <div class="flex justify-center mt-5 mb-20 mx-5">
+        {% if relay and relay.status != "pending" %}
+            <div>
+                <p class="my-10 text-center">완결된 릴레이 소설입니다.</p>
+                {% comment %} <a href="{% url 'relays:relay_list' %}" class="btn btn-primary"><i class="fa-solid fa-pen-fancy"></i>&nbsp;새로운 릴레이 소설 참여하기</a> {% endcomment %}
+            </div>
+        {% else %}
+
+            {% if user.is_authenticated %}
+                <form action="{% url 'comments:comment_create' %}" method="post" class="xl:w-6/12 lg:w-6/12 md:w-8/12 w-full">
+                    {% csrf_token %}
+                    <div class="flex justify-center">
+                        <input type="text" name="post_id" required id="id_post_id" value={{ post.id }} readnonly hidden>
+                        <textarea name="content" required id="id_content" placeholder="착한 댓글을 달아주세요." maxlength="1000" class="textarea h-36 textarea-bordered textarea-primary" style="width: 100%;"></textarea>
+                        <select name="public" required id="id_public" class="select select-bordered select-primary max-w-xs ml-2">
+                            <option value="public">공개</option>
+                            {% if not relay %}<option value="private">비공개</option>{% endif %}
+                        </select>
+                        <input type="text" name="relay" class="hidden" value={% if relay %}{{ relay.id }}{% else %}"0"{% endif %}>
+                        <button type="submit" class="btn btn-primary ml-2">저장</button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="xl:w-6/12 lg:w-6/12 md:w-8/12 w-full">
+                    <div class="flex justify-center">
+                        <input type="text" name="post_id" required id="id_post_id" value={{ post.id }} readnonly hidden>
+                        <textarea placeholder="로그인을 하면 댓글을 쓸 수 있어요." class="textarea h-36 textarea-bordered textarea-primary" disabled="disabled" style="width: 100%;"></textarea>
+                        <a href="{% url 'users:login' %}"class="btn btn-primary ml-2">로그인</a>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+    <!-- modal -->
+    <div class="modal" id="report">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-error text-center">신고하기</h3>
+            <p class="py-4 text-center">부적절한 일기를 발견하셨나요?<br>의견을 주시면 꼼꼼하게 검토하겠습니다.<br>처리 결과는 별도 안내드리지 않습니다.</p>
+            <form method="post" action="{% url 'reports:report' %}">
+                {% csrf_token %}
+                <p><input type="text" name="type" required id="id_type" value="2" readonly hidden></p>
+                <p><input type="text" name="ref" required id="id_ref" value="{{ post.pk }}" readonly hidden></p>
+                <textarea class="textarea textarea-primary" style="width: 100%" type="text" name="content" autofocus maxlength="2000" required id="id_content" placeholder="이 일기에 대한 의견을 적어주세요."></textarea>
+                <div class="flex justify-end">
+                    <a href="javascript:history.back()" class="btn btn-outline btn-error">취소</a>
+                    <button type="submit" id="reportBtn" class="btn btn-error ml-2">신고</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="report2">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-error text-center">신고하기</h3>
+            <p class="py-4 text-center">부적절한 댓글을 발견하셨나요?<br>의견을 주시면 꼼꼼하게 검토하겠습니다.<br>처리 결과는 별도 안내드리지 않습니다.</p>
+            <form method="post" action="{% url 'reports:report' %}">
+                {% csrf_token %}
+                <p><input type="text" name="type" required id="id_type" value="3" readonly hidden></p>
+                <p><input type="text" name="ref" required id="id_ref" value="{{ post.pk }}" readonly hidden></p>
+                <textarea class="textarea textarea-primary" style="width: 100%" type="text" name="content" autofocus maxlength="2000" required id="id_content" placeholder="이 댓글에 대한 의견을 적어주세요."></textarea>
+                <div class="flex justify-end">
+                    <a href="javascript:history.back()" class="btn btn-outline btn-error">취소</a>
+                    <button type="submit" id="report2Btn" class="btn btn-error ml-2">신고</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

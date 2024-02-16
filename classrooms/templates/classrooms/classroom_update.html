@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block title %} 학급관리 {% endblock %}
+
+{% block content %}
+<div class="flex justify-center mt-20">
+    <form method="post" class="xl:w-2/12 lg:w-4/12 md:w-6/12 sm:w-8/12 w-10/12">
+            {% csrf_token %}
+            <span class="label-text">학교명</span>
+            <p>{{ form.school }}</p>
+            <span class="label-text">학년</span>
+            <p>{{ form.grade }}</p>
+            <span class="label-text">반(동아리명)</span>
+            <p>{{ form.number }}</p>
+            <span class="label-text">학급 소개</span>
+            <p>{{ form.bio }}</p>
+            <span class="label-text">학급 비밀번호(숫자 6자리)</span>
+            <p>{{ form.pin }}</p>
+            <p>{{ form.pk }}</p>
+            <div class="flex justify-end">
+                <button type="submit" class="btn btn-primary btn-block">변경하기</button>
+            </div>
+        </form>
+    </div>
+    <div class="flex justify-center mt-20">
+        <a href="{% url 'classrooms:classroom_delete' classroom.id %}" class="text-error">학급 삭제</a>
+    </div>
+
+{% endblock %}

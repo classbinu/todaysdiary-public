@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}500{% endblock %}
+
+{% block content %}
+    <div class="flex my-20 justify-center">
+        <div class="p-10 bg-white rounded-md shadow-xl xl:w-4/12 lg:w-6/12 w-10/12">
+            <div class="flex flex-col items-center">
+                <h1 class="font-bold text-primary text-9xl">500</h1>
+
+                <h6 class="mb-2 text-xl font-bold text-center text-gray-800 md:text-2xl">
+                    <span class="text-red-500">뭔가 잘못된 것 같아요 :(</span>
+                </h6>
+
+                <p class="mb-8 text-center text-gray-500 md:text-lg">
+                    문제가 계속되면 관리자에게 문의해주세요.
+                </p>
+
+                <a href="{% url 'base:index' %}" class="btn btn-primary">처음으로</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

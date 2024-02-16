@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+
+{% block title %}학급 가입{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center mt-40 mb-96">
+        <form method="post" class="xl:w-3/12 lg:w-4/12 md:w-6/12 sm:w-8/12 w-10/12">
+            {% csrf_token %}
+            <p><input type="password" name="pin" required id="id_pin" class="input input-primary input-bordered my-2" pattern="[0-9]+" placeholder="선생님이 알려주신 가입코드 6자리를 입력하세요." minlength="6" maxlength="6" style="width: 100%;"></p>
+            <div class="flex justify-end">
+                <button type="submit" class="btn btn-primary">학급 가입</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 이거 안됨 -->
+    <div class="modal" id="passwordErrorMessage">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-error">학급 비밀번호가 틀렸습니다.</h3>
+            <p class="py-4">선생님이 알려주신 학급 비밀번호 6자리를 확인하세요.</p>
+            <div class="modal-action flex justify-end">
+                <a href="{% url 'classrooms:classroom_search' %}" id="policyAgreeBtn" class="btn btn-success btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md">다른 학급 찾기</a>
+                <a href="javascript:history.back()" id="policyAgreeBtn" class="btn btn-primary btn-sm sm:btn-sm md:btn-md lg:btn-md xl:btn-md">비밀번호 재입력</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
