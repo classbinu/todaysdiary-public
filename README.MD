@@ -3,13 +3,12 @@
 
 # 오늘의 일기
 
-개발자 면접 준비는 정글피다아 AI  
-[https://todaysdiary.net/](https://todaysdiary.net/)
-
 세상에서 가장 재미있는 일기 쓰기
 
-개발인원: 1인
-개발기간: 2022/01 ~ 2022/02
+[https://todaysdiary.net/](https://todaysdiary.net/)
+
+- 개발인원: 1인
+- 개발기간: 2022/01 ~ 2022/02
 
 ## 사용자 현황
 
